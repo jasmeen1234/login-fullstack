@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import UserType from "./UserType"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import axios from 'axios'
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -29,12 +29,20 @@ function Copyright(props) {
 
 
 const defaultTheme = createTheme();
-
+const base_url="http://localhost:8000"
 export default function Login() {
-  const handleSubmit = (event) => {
+  const [userType, setUserType] = React.useState('');
+  const handleSubmit = async(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    let response=await axios.post(`${base_url}/login`,{
+      userType:userType,
+      email: data.get('email'),
+      password:data.get('password'),
+    });
+    console.log(response)
     console.log({
+      userType:userType,
       email: data.get('email'),
       password: data.get('password'),
     });
@@ -61,7 +69,7 @@ export default function Login() {
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={1}>
             <Grid item xs={12}>
-                <UserType/>
+                <UserType userType={userType} setUserType={setUserType} />
               </Grid>
               <Grid item xs={12}>
                 <TextField

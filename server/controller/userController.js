@@ -89,6 +89,7 @@ export const signUpController =async (req, res) => {
 
   export const loginController=async(req,res)=>{
       const {email,password,userType}=req.body;
+      console.log(req.body)
      try{
         if(!email){
             return res.status(200).json({ error: "email is required" });
@@ -112,12 +113,13 @@ export const signUpController =async (req, res) => {
   export const resetController=async(req,res)=>{
     const {email,userType}=req.body;
    try{
+          if(!userType){
+        return res.status(200).json({ error: "select user type" });
+      }
     if(!email){
         return res.status(200).json({ error: "email is required" });
       }
-      if(!userType){
-        return res.status(200).json({ error: "select user type" });
-      }
+
       const user = await UserModel.findOne({ where: { email: email,userType:userType } });
       if(!user){
         return res.status(200).json({ error: "user not found" });
@@ -167,5 +169,33 @@ export const signUpController =async (req, res) => {
     }catch(e){
         console.log(e)
         return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+
+  export const getAllUsersController=async(req,res)=>{
+    try{
+      let users=await UserModel.findAll({where:{userType:"user"}});
+      if(users.length===0){
+        return res.status(200).json({error:"user not found"});
+      }
+      return res.status(200).json(users);
+    }catch(e){
+      console.log(e);
+      return res.status(500).json({error:"Internal  error"});
+    }
+  }
+
+  export const deleteUserController=async(req,res)=>{
+    let id=req.params.id;
+    console.log(id)
+    try{
+      let user=await UserModel.destroy({where:{id:id,userType:"user"}});
+      if(user===null){
+        return res.status(200).json({error:"user not found"});
+      }
+      return res.status(200).json({message:"user deleted successfull"});
+    }catch(e){
+      console.log(e);
+      return res.status(500).json({error:"Internal  error"});
     }
   }
