@@ -1,10 +1,9 @@
 import * as React from 'react';
+import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -12,32 +11,42 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import UserType from "./UserType"
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-
 const defaultTheme = createTheme();
+const baseURL = "http://localhost:8000";
 
 export default function ForgetPswd() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+  const [role, setRole] = useState('');
+  const navigate = useNavigate();
+  
+    const handleSubmit = async (event) => {
+      event.preventDefault();
+      if (!role) {
+        alert('Please select a user type');
+        return;
+      }
+    
+      const data = new FormData(event.currentTarget);
+      const email = data.get('email');
+    
+      try {
+        const response = await axios.post(`${baseURL}/password/reset`, { email, userType: role });
+        console.log(response.data);
+        alert(response.data.message);
+        navigate('/resetpwd');
+      } catch (error) {
+        console.error(error.message);
+        alert('An error occurred while processing your request');
+      }
+    };
+  
+
+  const forgetHandler = () => {
+    // This function can be used for additional actions before form submission
+    // For now, it can be left empty
   };
 
   return (
@@ -56,12 +65,12 @@ export default function ForgetPswd() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Forget Password
+            Forgot Password
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={1}>
-            <Grid item xs={12}>
-                <UserType/>
+              <Grid item xs={12}>
+                <UserType role={role} setRole={setRole} />
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -79,12 +88,12 @@ export default function ForgetPswd() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={forgetHandler}
             >
-              send code
+              Send Code
             </Button>
           </Box>
         </Box>
-        {/* <Copyright sx={{ mt: 5 }} /> */}
       </Container>
     </ThemeProvider>
   );

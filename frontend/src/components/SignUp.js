@@ -70,7 +70,7 @@ if(response.data.error){
 }
 if( response.data.message){
   alert( response.data.message);
-  navigate('/login');
+  navigate('/');
 }
      }catch(error){
       console.error(error.message);

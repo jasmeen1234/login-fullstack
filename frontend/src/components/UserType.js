@@ -8,10 +8,11 @@ import Checkbox from '@mui/material/Checkbox';
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
-export default function BasicSelect({setUserType,userType}) {
+export default function UserType({role,setRole}) {
+  const [userType, setUserType] = React.useState('');
 
   const handleChange = (event) => {
-    setUserType(event.target.value);
+    setRole(event.target.value);
   };
 
   return (
@@ -21,7 +22,7 @@ export default function BasicSelect({setUserType,userType}) {
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={userType}
+          value={role}
           label="userType"
           onChange={handleChange}
         >
