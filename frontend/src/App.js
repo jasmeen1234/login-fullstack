@@ -11,9 +11,9 @@ function App() {
     <div className="App">
       <BrowserRouter>
       <Routes>
-        <Route path="/" element={<SignUp/>}/>
+        <Route path="/signup" element={<SignUp/>}/>
         <Route path="/email/verification" element={<EmailValidation/>}/>
-        <Route path="/login" element={<Login/>}/>
+        <Route path="/" element={<Login/>}/>
         <Route path="/pwd" element={<ForgetPswd/>}/>
         <Route path="/resetpwd" element={<ResetPaswd/>}/>
       </Routes>
