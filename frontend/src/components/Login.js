@@ -23,35 +23,29 @@ export default function Login(event) {
     const email = data.get('email');
     const password = data.get('password');
   
-  const [userType, setUserType] = useState("");
+  const [userType, setUserType] = useState({});
   const navigate = useNavigate();
   const [role, setRole] = useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const email = data.get('email');
-    const password = data.get('password');
-    if (!email || !password) {
-      alert('Please fill in all fields');
-      return;
-    }
-    console.log({
-      email: email,
-      password: password,
-    });
-    // Perform login logic here...
-  };
+ 
 
   const loginHandler = async (event) => {
     event.preventDefault();
-    const email = data.get('email');
+    // const data = new FormData(event.currentTarget);
+    console.log("userType", userType);
+    const email = userType.email;
+    const password = userType.password;
+  
+    console.log("email",email);
+    console.log("password",password);
+
     try {
       let response = await axios.post(`${baseURL}/login`, { email, ...userType, userType: role });
-      console.log(response.data.message);
-      if (response.data.error) {
-        alert(response.data.error);
-      }
+      console.log("response=",response);
+      // console.log(response.data.message);
+      // if (response.data.error) {
+      //   alert(response.data.error);
+      // }
       if (response.data.message) {
         alert(response.data.message);
         navigate('/signup');
@@ -87,7 +81,7 @@ export default function Login(event) {
           <Typography component="h1" variant="h5">
             Login
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box component="form" noValidate  sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <UserType role={role} setRole={setRole} />

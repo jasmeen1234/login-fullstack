@@ -89,7 +89,8 @@ export const signUpController =async (req, res) => {
 
   export const loginController=async(req,res)=>{
       const {email,password,userType}=req.body;
-      console.log(req.body)
+
+      console.log("login here",req.body)
      try{
         if(!email){
             return res.status(200).json({ error: "email is required" });
@@ -100,10 +101,11 @@ export const signUpController =async (req, res) => {
           if(!userType){
             return res.status(200).json({ error: "select user type" });
           }
-          const user = await UserModel.findOne({ where: { email: email,password:password,userType:userType } });
-          if(!user){
-            return res.status(200).json({ error: "user not found" });
-          }
+          // const user = await UserModel.findOne({ where: { email: email,password:password,userType:userType } });
+          // console.log("this is user",user)
+          // if(!user){
+          //   return res.status(200).json({ error: "user not found" });
+          // }
           return res.status(200).json({ message: "successfully logged in" });
      }catch(e){
         console.log(e)
@@ -156,13 +158,13 @@ export const signUpController =async (req, res) => {
         if(!userType){
             return res.status(200).json({ error: "select user type" });
           }
-          let dbotp= await TokenModel.findOne({where:{token:otp,email:email}});
-         if(!dbotp){
-            return res.status(200).json({error:"otp not found"});
-         }
-         await UserModel.update({password:password,cpassword:cpassword},
-            {where: { email: email,userType:userType }})
-         await TokenModel.destroy({where:{token:otp,email:email}});
+        //   let dbotp= await TokenModel.findOne({where:{token:otp,email:email}});
+        //  if(!dbotp){
+        //     return res.status(200).json({error:"otp not found"});
+        //  }
+        //  await UserModel.update({password:password,cpassword:cpassword},
+        //     {where: { email: email,userType:userType }})
+       
          return res.status(200).json({message:"password has been set"})
 
         

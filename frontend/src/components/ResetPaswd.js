@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState} from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,6 +11,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import UserType from "./UserType"
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 function Copyright(props) {
@@ -27,14 +30,35 @@ function Copyright(props) {
 
 
 const defaultTheme = createTheme();
-
-export default function ForgetPswd() {
-  const handleSubmit = (event) => {
+const baseURL = "http://localhost:8000";
+export default function ResetPaswd() {
+  const [role, setRole]=useState("");
+  const[user,setUser]=useState({});
+  const navigate = useNavigate();
+  const handleSubmit = async(event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+    // const data = new FormData(event.currentTarget);
+    console.log("user",user);
+    const email = user.email;
+    const password=user.password;
+    const cpassword=user.cpassword;
+    const otp=user.otp;
+    
+    try {
+      const response = await axios.post(`${baseURL}/password/set`, { email, password,cpassword,otp, userType: role });
+      console.log("response",response);
+      alert(response.data.message);
+      navigate('/');
+    } catch (error) {
+      console.error(error.message);
+      alert('An error occurred while processing your request');
+    }
+  
+  };
+  const onChangeHandler = (event) => {
+    setUser({
+      ...user,
+      [event.target.name]: event.target.value
     });
   };
 
@@ -56,10 +80,10 @@ export default function ForgetPswd() {
           <Typography component="h1" variant="h5">
             Reset Password
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box component="form" noValidate  sx={{ mt: 3 }}>
             <Grid container spacing={1}>
             <Grid item xs={12}>
-                <UserType/>
+                <UserType role={role} setRole={setRole}/>
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -69,6 +93,7 @@ export default function ForgetPswd() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  onChange={onChangeHandler}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -80,6 +105,7 @@ export default function ForgetPswd() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  onChange={onChangeHandler}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -91,6 +117,7 @@ export default function ForgetPswd() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  onChange={onChangeHandler}
                 />
                  <Grid item xs={12}>
                 <TextField
@@ -101,6 +128,7 @@ export default function ForgetPswd() {
                   type="text"
                   id="otp"
                   autoComplete="new-password"
+                  onChange={onChangeHandler}
                 />
               </Grid>
               </Grid>
@@ -110,6 +138,7 @@ export default function ForgetPswd() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={handleSubmit}
             >
               submit
             </Button>
